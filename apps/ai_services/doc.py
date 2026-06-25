@@ -1,1 +1,0 @@
-# first run python -m venv .venv to create an enviroment into the ai-services folder
