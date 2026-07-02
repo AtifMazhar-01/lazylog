@@ -5,6 +5,9 @@ pub fn just_print() {
     if let Err(e) = mem.collect() {
         eprintln!("Error: {}", e);
     }
+    if let Err(e) = mem.write() {
+        eprintln!("Error: {}", e);
+    }
     let (total_mem, available_mem) = mem.get_memory_gb();
     let used_memory = total_mem - available_mem;
     println!("Total memory : {:.4} GB", total_mem);
@@ -13,4 +16,7 @@ pub fn just_print() {
 }
 pub trait Collector {
     fn collect(&mut self) -> Result<(), Box<dyn std::error::Error>>;
+}
+pub trait Writer {
+    fn write(&mut self) -> std::io::Result<()>;
 }

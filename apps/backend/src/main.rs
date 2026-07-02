@@ -1,4 +1,7 @@
-use agent::just_print;
+mod runagents;
+
 fn main() {
-    just_print();
+    loop {
+        runagents::run_agents();
+    }
 }

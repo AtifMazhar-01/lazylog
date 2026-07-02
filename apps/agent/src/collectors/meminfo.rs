@@ -1,6 +1,9 @@
 use std::fs;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 use crate::Collector;
+use crate::Writer;
 
 #[derive(Debug, Default)]
 pub struct MemoryInfo {
@@ -40,6 +43,29 @@ impl Collector for MemoryInfo {
                 _ => {}
             }
         }
+
+        Ok(())
+    }
+}
+
+impl Writer for MemoryInfo {
+    fn write(&mut self) -> std::io::Result<()> {
+        let mut file = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open("csv/memory.csv")?;
+        writeln!(
+            file,
+            "total_memory(kb),used_memory(kb),available_memory(kb)"
+        )?;
+        writeln!(
+            file,
+            "{:.4},{:.4},{:.4}",
+            self.total_memory,
+            (self.total_memory - self.available_memory),
+            self.available_memory
+        )?;
 
         Ok(())
     }
