@@ -1,6 +1,10 @@
 pub mod collectors;
+pub use collectors::cpuinfo::{cpu_model, cpu_usage, logical_cpus};
 pub use collectors::meminfo::MemoryInfo;
+
+use crate::collectors::cpuinfo::CpuStat;
 pub fn just_print() {
+    //memory
     let mut mem = MemoryInfo::new();
     if let Err(e) = mem.collect() {
         eprintln!("Error: {}", e);
@@ -8,11 +12,15 @@ pub fn just_print() {
     if let Err(e) = mem.write() {
         eprintln!("Error: {}", e);
     }
-    let (total_mem, available_mem) = mem.get_memory_gb();
-    let used_memory = total_mem - available_mem;
-    println!("Total memory : {:.4} GB", total_mem);
-    println!("Used memory : {:.4} GB", used_memory);
-    println!("Available memory : {:.4} GB", available_mem);
+
+    //cpu
+    let mut cpu_info = CpuStat::new();
+    if let Err(e) = cpu_info.collect() {
+        eprintln!("Error: {}", e);
+    }
+    if let Err(e) = cpu_info.write() {
+        eprintln!("Error: {}", e);
+    };
 }
 pub trait Collector {
     fn collect(&mut self) -> Result<(), Box<dyn std::error::Error>>;
