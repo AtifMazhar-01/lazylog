@@ -4,6 +4,8 @@ pub use collectors::diskinfo::DiskCollector;
 pub use collectors::meminfo::MemoryInfo;
 
 use crate::collectors::cpuinfo::CpuStat;
+use crate::collectors::netinfo::NetworkInfo;
+use crate::collectors::otherinfo::SystemInfo;
 pub fn just_print() {
     //memory
     let mut mem = MemoryInfo::new();
@@ -31,6 +33,23 @@ pub fn just_print() {
     if let Err(e) = disk_info.write() {
         eprintln!("Error: {}", e);
     };
+
+    //network
+    let mut net = NetworkInfo::new();
+    if let Err(e) = net.collect() {
+        eprintln!("Error: {}", e);
+    }
+    if let Err(e) = net.write() {
+        eprintln!("Error: {}", e);
+    }
+    //other
+    let mut sys_info = SystemInfo::new();
+    if let Err(e) = sys_info.collect() {
+        eprintln!("Error: {}", e);
+    }
+    if let Err(e) = sys_info.write() {
+        eprintln!("Error: {}", e);
+    }
 }
 pub trait Collector {
     fn collect(&mut self) -> Result<(), Box<dyn std::error::Error>>;
