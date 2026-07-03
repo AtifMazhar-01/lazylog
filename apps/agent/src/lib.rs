@@ -1,5 +1,6 @@
 pub mod collectors;
 pub use collectors::cpuinfo::{cpu_model, cpu_usage, logical_cpus};
+pub use collectors::diskinfo::DiskCollector;
 pub use collectors::meminfo::MemoryInfo;
 
 use crate::collectors::cpuinfo::CpuStat;
@@ -19,6 +20,15 @@ pub fn just_print() {
         eprintln!("Error: {}", e);
     }
     if let Err(e) = cpu_info.write() {
+        eprintln!("Error: {}", e);
+    };
+
+    //disk
+    let mut disk_info = DiskCollector::new();
+    if let Err(e) = disk_info.collect() {
+        eprintln!("Error: {}", e);
+    }
+    if let Err(e) = disk_info.write() {
         eprintln!("Error: {}", e);
     };
 }
